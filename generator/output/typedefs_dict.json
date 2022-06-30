@@ -20,10 +20,13 @@
   "ImFontAtlas": "struct ImFontAtlas",
   "ImFontAtlasCustomRect": "struct ImFontAtlasCustomRect",
   "ImFontAtlasFlags": "int",
+  "ImFontAtlasTexture": "struct ImFontAtlasTexture",
   "ImFontBuilderIO": "struct ImFontBuilderIO",
   "ImFontConfig": "struct ImFontConfig",
   "ImFontGlyph": "struct ImFontGlyph",
+  "ImFontGlyphHotData": "struct ImFontGlyphHotData",
   "ImFontGlyphRangesBuilder": "struct ImFontGlyphRangesBuilder",
+  "ImFontKerningPair": "struct ImFontKerningPair",
   "ImGuiActivateFlags": "int",
   "ImGuiBackendFlags": "int",
   "ImGuiButtonFlags": "int",
@@ -180,5 +183,6 @@
   "StbUndoState": "struct StbUndoState",
   "const_iterator": "const value_type*",
   "iterator": "value_type*",
+  "stbtt_pack_context": "struct stbtt_pack_context",
   "value_type": "T"
 }

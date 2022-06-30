@@ -109,7 +109,10 @@ typedef struct ImGuiTableColumnsSettings ImGuiTableColumnsSettings;
 typedef struct ImGuiWindow ImGuiWindow;
 typedef struct ImGuiWindowTempData ImGuiWindowTempData;
 typedef struct ImGuiWindowSettings ImGuiWindowSettings;
+typedef struct stbtt_pack_context stbtt_pack_context;
 typedef struct ImVector_const_charPtr {int Size;int Capacity;const char** Data;} ImVector_const_charPtr;
+
+typedef struct ImVector_stbtt_pack_context {int Size;int Capacity;stbtt_pack_context* Data;} ImVector_stbtt_pack_context;
 
 struct ImDrawChannel;
 struct ImDrawCmd;
@@ -609,6 +612,7 @@ typedef enum {
     ImGuiConfigFlags_NavNoCaptureKeyboard = 1 << 3,
     ImGuiConfigFlags_NoMouse = 1 << 4,
     ImGuiConfigFlags_NoMouseCursorChange = 1 << 5,
+    ImGuiConfigFlags_NoKerning = 1 << 6,
     ImGuiConfigFlags_DockingEnable = 1 << 6,
     ImGuiConfigFlags_ViewportsEnable = 1 << 10,
     ImGuiConfigFlags_DpiEnableScaleViewports= 1 << 14,
@@ -1167,6 +1171,7 @@ struct ImFontConfig
     bool MergeMode;
     unsigned int FontBuilderFlags;
     float RasterizerMultiply;
+    float RasterizerGamma;
     ImWchar EllipsisChar;
     char Name[40];
     ImFont* DstFont;
@@ -1175,7 +1180,8 @@ struct ImFontGlyph
 {
     unsigned int Colored : 1;
     unsigned int Visible : 1;
-    unsigned int Codepoint : 30;
+    unsigned int TextureIndex : 9;
+    unsigned int Codepoint : 21;
     float AdvanceX;
     float X0, Y0, X1, Y1;
     float U0, V0, U1, V1;
@@ -1191,10 +1197,19 @@ struct ImFontAtlasCustomRect
 {
     unsigned short Width, Height;
     unsigned short X, Y;
-    unsigned int GlyphID;
+    unsigned int Reserved : 2;
+    unsigned int TextureIndex : 9;
+    unsigned int GlyphID : 21;
     float GlyphAdvanceX;
     ImVec2 GlyphOffset;
     ImFont* Font;
+};
+typedef struct ImFontAtlasTexture ImFontAtlasTexture;
+struct ImFontAtlasTexture
+{
+    ImTextureID TexID;
+    unsigned char* TexPixelsAlpha8;
+    unsigned int* TexPixelsRGBA32;
 };
 typedef enum {
     ImFontAtlasFlags_None = 0,
@@ -1202,6 +1217,8 @@ typedef enum {
     ImFontAtlasFlags_NoMouseCursors = 1 << 1,
     ImFontAtlasFlags_NoBakedLines = 1 << 2
 }ImFontAtlasFlags_;
+typedef struct ImVector_ImFontAtlasTexture {int Size;int Capacity;ImFontAtlasTexture* Data;} ImVector_ImFontAtlasTexture;
+
 typedef struct ImVector_ImFontPtr {int Size;int Capacity;ImFont** Data;} ImVector_ImFontPtr;
 
 typedef struct ImVector_ImFontAtlasCustomRect {int Size;int Capacity;ImFontAtlasCustomRect* Data;} ImVector_ImFontAtlasCustomRect;
@@ -1211,14 +1228,13 @@ typedef struct ImVector_ImFontConfig {int Size;int Capacity;ImFontConfig* Data;}
 struct ImFontAtlas
 {
     ImFontAtlasFlags Flags;
-    ImTextureID TexID;
+    ImVector_ImFontAtlasTexture Textures;
     int TexDesiredWidth;
+    int TexDesiredHeight;
     int TexGlyphPadding;
     bool Locked;
     bool TexReady;
     bool TexPixelsUseColors;
-    unsigned char* TexPixelsAlpha8;
-    unsigned int* TexPixelsRGBA32;
     int TexWidth;
     int TexHeight;
     ImVec2 TexUvScale;
@@ -1232,18 +1248,41 @@ struct ImFontAtlas
     int PackIdMouseCursors;
     int PackIdLines;
 };
+typedef struct ImFontKerningPair ImFontKerningPair;
+struct ImFontKerningPair
+{
+    ImWchar Left;
+    ImWchar Right;
+    float AdvanceXAdjustment;
+};
+typedef struct ImFontGlyphHotData ImFontGlyphHotData;
+struct ImFontGlyphHotData
+{
+    float AdvanceX;
+    float OccupiedWidth;
+    unsigned int KerningPairUseBisect : 1;
+    unsigned int KerningPairOffset : 19;
+    unsigned int KerningPairCount : 12;
+};
+static constexpr int ImFont_FrequentKerningPairs_MaxCodepoint = 128;
+typedef struct ImVector_ImFontGlyphHotData {int Size;int Capacity;ImFontGlyphHotData* Data;} ImVector_ImFontGlyphHotData;
+
 typedef struct ImVector_float {int Size;int Capacity;float* Data;} ImVector_float;
 
 typedef struct ImVector_ImFontGlyph {int Size;int Capacity;ImFontGlyph* Data;} ImVector_ImFontGlyph;
 
+typedef struct ImVector_ImFontKerningPair {int Size;int Capacity;ImFontKerningPair* Data;} ImVector_ImFontKerningPair;
+
 struct ImFont
 {
-    ImVector_float IndexAdvanceX;
-    float FallbackAdvanceX;
+    ImVector_ImFontGlyphHotData IndexedHotData;
+    ImVector_float FrequentKerningPairs;
     float FontSize;
     ImVector_ImWchar IndexLookup;
     ImVector_ImFontGlyph Glyphs;
     const ImFontGlyph* FallbackGlyph;
+    const ImFontGlyphHotData* FallbackHotData;
+    ImVector_ImFontKerningPair KerningPairs;
     ImFontAtlas* ContainerAtlas;
     const ImFontConfig* ConfigData;
     short ConfigDataCount;
@@ -2876,6 +2915,7 @@ struct ImFontBuilderIO
 {
     bool (*FontBuilder_Build)(ImFontAtlas* atlas);
 };
+struct stbtt_pack_context;
 #define IMGUI_HAS_DOCK       1
 
 #else
@@ -2905,8 +2945,11 @@ typedef ImVector<ImDrawList*> ImVector_ImDrawListPtr;
 typedef ImVector<ImDrawVert> ImVector_ImDrawVert;
 typedef ImVector<ImFont*> ImVector_ImFontPtr;
 typedef ImVector<ImFontAtlasCustomRect> ImVector_ImFontAtlasCustomRect;
+typedef ImVector<ImFontAtlasTexture> ImVector_ImFontAtlasTexture;
 typedef ImVector<ImFontConfig> ImVector_ImFontConfig;
 typedef ImVector<ImFontGlyph> ImVector_ImFontGlyph;
+typedef ImVector<ImFontGlyphHotData> ImVector_ImFontGlyphHotData;
+typedef ImVector<ImFontKerningPair> ImVector_ImFontKerningPair;
 typedef ImVector<ImGuiColorMod> ImVector_ImGuiColorMod;
 typedef ImVector<ImGuiContextHook> ImVector_ImGuiContextHook;
 typedef ImVector<ImGuiDockNodeSettings> ImVector_ImGuiDockNodeSettings;
@@ -2944,6 +2987,7 @@ typedef ImVector<ImWchar> ImVector_ImWchar;
 typedef ImVector<char> ImVector_char;
 typedef ImVector<const char*> ImVector_const_charPtr;
 typedef ImVector<float> ImVector_float;
+typedef ImVector<stbtt_pack_context> ImVector_stbtt_pack_context;
 typedef ImVector<unsigned char> ImVector_unsigned_char;
 #endif //CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 CIMGUI_API ImVec2* ImVec2_ImVec2_Nil(void);
@@ -3544,10 +3588,11 @@ CIMGUI_API void ImFontAtlas_ClearTexData(ImFontAtlas* self);
 CIMGUI_API void ImFontAtlas_ClearFonts(ImFontAtlas* self);
 CIMGUI_API void ImFontAtlas_Clear(ImFontAtlas* self);
 CIMGUI_API bool ImFontAtlas_Build(ImFontAtlas* self);
-CIMGUI_API void ImFontAtlas_GetTexDataAsAlpha8(ImFontAtlas* self,unsigned char** out_pixels,int* out_width,int* out_height,int* out_bytes_per_pixel);
-CIMGUI_API void ImFontAtlas_GetTexDataAsRGBA32(ImFontAtlas* self,unsigned char** out_pixels,int* out_width,int* out_height,int* out_bytes_per_pixel);
+CIMGUI_API void ImFontAtlas_GetTexDataAsAlpha8(ImFontAtlas* self,int texture_index,unsigned char** out_pixels,int* out_width,int* out_height,int* out_bytes_per_pixel);
+CIMGUI_API void ImFontAtlas_GetTexDataAsRGBA32(ImFontAtlas* self,int texture_index,unsigned char** out_pixels,int* out_width,int* out_height,int* out_bytes_per_pixel);
 CIMGUI_API bool ImFontAtlas_IsBuilt(ImFontAtlas* self);
-CIMGUI_API void ImFontAtlas_SetTexID(ImFontAtlas* self,ImTextureID id);
+CIMGUI_API void ImFontAtlas_SetTexID(ImFontAtlas* self,int texture_index,ImTextureID id);
+CIMGUI_API void ImFontAtlas_ClearTexID(ImFontAtlas* self,ImTextureID nullId);
 CIMGUI_API const ImWchar* ImFontAtlas_GetGlyphRangesDefault(ImFontAtlas* self);
 CIMGUI_API const ImWchar* ImFontAtlas_GetGlyphRangesKorean(ImFontAtlas* self);
 CIMGUI_API const ImWchar* ImFontAtlas_GetGlyphRangesJapanese(ImFontAtlas* self);
@@ -3560,11 +3605,12 @@ CIMGUI_API int ImFontAtlas_AddCustomRectRegular(ImFontAtlas* self,int width,int 
 CIMGUI_API int ImFontAtlas_AddCustomRectFontGlyph(ImFontAtlas* self,ImFont* font,ImWchar id,int width,int height,float advance_x,const ImVec2 offset);
 CIMGUI_API ImFontAtlasCustomRect* ImFontAtlas_GetCustomRectByIndex(ImFontAtlas* self,int index);
 CIMGUI_API void ImFontAtlas_CalcCustomRectUV(ImFontAtlas* self,const ImFontAtlasCustomRect* rect,ImVec2* out_uv_min,ImVec2* out_uv_max);
-CIMGUI_API bool ImFontAtlas_GetMouseCursorTexData(ImFontAtlas* self,ImGuiMouseCursor cursor,ImVec2* out_offset,ImVec2* out_size,ImVec2 out_uv_border[2],ImVec2 out_uv_fill[2]);
+CIMGUI_API bool ImFontAtlas_GetMouseCursorTexData(ImFontAtlas* self,ImGuiMouseCursor cursor,ImVec2* out_offset,ImVec2* out_size,ImVec2 out_uv_border[2],ImVec2 out_uv_fill[2],int* texture_index);
 CIMGUI_API ImFont* ImFont_ImFont(void);
 CIMGUI_API void ImFont_destroy(ImFont* self);
 CIMGUI_API const ImFontGlyph* ImFont_FindGlyph(ImFont* self,ImWchar c);
 CIMGUI_API const ImFontGlyph* ImFont_FindGlyphNoFallback(ImFont* self,ImWchar c);
+CIMGUI_API float ImFont_GetDistanceAdjustmentForPair(ImFont* self,ImWchar left_c,ImWchar right_c);
 CIMGUI_API float ImFont_GetCharAdvance(ImFont* self,ImWchar c);
 CIMGUI_API bool ImFont_IsLoaded(ImFont* self);
 CIMGUI_API const char* ImFont_GetDebugName(ImFont* self);
@@ -3575,10 +3621,12 @@ CIMGUI_API void ImFont_RenderText(ImFont* self,ImDrawList* draw_list,float size,
 CIMGUI_API void ImFont_BuildLookupTable(ImFont* self);
 CIMGUI_API void ImFont_ClearOutputData(ImFont* self);
 CIMGUI_API void ImFont_GrowIndex(ImFont* self,int new_size);
-CIMGUI_API void ImFont_AddGlyph(ImFont* self,const ImFontConfig* src_cfg,ImWchar c,float x0,float y0,float x1,float y1,float u0,float v0,float u1,float v1,float advance_x);
+CIMGUI_API void ImFont_AddGlyph(ImFont* self,const ImFontConfig* src_cfg,ImWchar c,int texture_index,float x0,float y0,float x1,float y1,float u0,float v0,float u1,float v1,float advance_x);
 CIMGUI_API void ImFont_AddRemapChar(ImFont* self,ImWchar dst,ImWchar src,bool overwrite_dst);
 CIMGUI_API void ImFont_SetGlyphVisible(ImFont* self,ImWchar c,bool visible);
 CIMGUI_API bool ImFont_IsGlyphRangeUnused(ImFont* self,unsigned int c_begin,unsigned int c_last);
+CIMGUI_API void ImFont_AddKerningPair(ImFont* self,ImWchar left_c,ImWchar right_c,float distance_adjustment);
+CIMGUI_API float ImFont_GetDistanceAdjustmentForPairFromHotData(ImFont* self,ImWchar left_c,const ImFontGlyphHotData* right_c_info);
 CIMGUI_API ImGuiViewport* ImGuiViewport_ImGuiViewport(void);
 CIMGUI_API void ImGuiViewport_destroy(ImGuiViewport* self);
 CIMGUI_API void ImGuiViewport_GetCenter(ImVec2 *pOut,ImGuiViewport* self);
@@ -3592,7 +3640,7 @@ CIMGUI_API void ImGuiPlatformImeData_destroy(ImGuiPlatformImeData* self);
 CIMGUI_API int igGetKeyIndex(ImGuiKey key);
 CIMGUI_API ImGuiID igImHashData(const void* data,size_t data_size,ImU32 seed);
 CIMGUI_API ImGuiID igImHashStr(const char* data,size_t data_size,ImU32 seed);
-CIMGUI_API void igImQsort(void* base,size_t count,size_t size_of_element,int(*compare_func)(void const*,void const*));
+CIMGUI_API void igImQsort(void* base,size_t count,size_t size_of_element,int(__cdecl*compare_func)(void const*,void const*));
 CIMGUI_API ImU32 igImAlphaBlendColors(ImU32 col_a,ImU32 col_b);
 CIMGUI_API bool igImIsPowerOfTwo_Int(int v);
 CIMGUI_API bool igImIsPowerOfTwo_U64(ImU64 v);
@@ -4204,11 +4252,11 @@ CIMGUI_API void igDebugRenderViewportThumbnail(ImDrawList* draw_list,ImGuiViewpo
 CIMGUI_API const ImFontBuilderIO* igImFontAtlasGetBuilderForStbTruetype(void);
 CIMGUI_API void igImFontAtlasBuildInit(ImFontAtlas* atlas);
 CIMGUI_API void igImFontAtlasBuildSetupFont(ImFontAtlas* atlas,ImFont* font,ImFontConfig* font_config,float ascent,float descent);
-CIMGUI_API void igImFontAtlasBuildPackCustomRects(ImFontAtlas* atlas,void* stbrp_context_opaque);
+CIMGUI_API void igImFontAtlasBuildPackCustomRects(ImFontAtlas* atlas,ImVector_stbtt_pack_context * pack_contexts);
 CIMGUI_API void igImFontAtlasBuildFinish(ImFontAtlas* atlas);
-CIMGUI_API void igImFontAtlasBuildRender8bppRectFromString(ImFontAtlas* atlas,int x,int y,int w,int h,const char* in_str,char in_marker_char,unsigned char in_marker_pixel_value);
-CIMGUI_API void igImFontAtlasBuildRender32bppRectFromString(ImFontAtlas* atlas,int x,int y,int w,int h,const char* in_str,char in_marker_char,unsigned int in_marker_pixel_value);
-CIMGUI_API void igImFontAtlasBuildMultiplyCalcLookupTable(unsigned char out_table[256],float in_multiply_factor);
+CIMGUI_API void igImFontAtlasBuildRender8bppRectFromString(ImFontAtlas* atlas,int texture_index,int x,int y,int w,int h,const char* in_str,char in_marker_char,unsigned char in_marker_pixel_value);
+CIMGUI_API void igImFontAtlasBuildRender32bppRectFromString(ImFontAtlas* atlas,int texture_index,int x,int y,int w,int h,const char* in_str,char in_marker_char,unsigned int in_marker_pixel_value);
+CIMGUI_API void igImFontAtlasBuildMultiplyCalcLookupTable(unsigned char out_table[256],float in_multiply_factor,float gamma_factor);
 CIMGUI_API void igImFontAtlasBuildMultiplyRectAlpha8(const unsigned char table[256],unsigned char* pixels,int x,int y,int w,int h,int stride);
 
 

@@ -2449,21 +2449,25 @@ CIMGUI_API bool ImFontAtlas_Build(ImFontAtlas* self)
 {
     return self->Build();
 }
-CIMGUI_API void ImFontAtlas_GetTexDataAsAlpha8(ImFontAtlas* self,unsigned char** out_pixels,int* out_width,int* out_height,int* out_bytes_per_pixel)
+CIMGUI_API void ImFontAtlas_GetTexDataAsAlpha8(ImFontAtlas* self,int texture_index,unsigned char** out_pixels,int* out_width,int* out_height,int* out_bytes_per_pixel)
 {
-    return self->GetTexDataAsAlpha8(out_pixels,out_width,out_height,out_bytes_per_pixel);
+    return self->GetTexDataAsAlpha8(texture_index,out_pixels,out_width,out_height,out_bytes_per_pixel);
 }
-CIMGUI_API void ImFontAtlas_GetTexDataAsRGBA32(ImFontAtlas* self,unsigned char** out_pixels,int* out_width,int* out_height,int* out_bytes_per_pixel)
+CIMGUI_API void ImFontAtlas_GetTexDataAsRGBA32(ImFontAtlas* self,int texture_index,unsigned char** out_pixels,int* out_width,int* out_height,int* out_bytes_per_pixel)
 {
-    return self->GetTexDataAsRGBA32(out_pixels,out_width,out_height,out_bytes_per_pixel);
+    return self->GetTexDataAsRGBA32(texture_index,out_pixels,out_width,out_height,out_bytes_per_pixel);
 }
 CIMGUI_API bool ImFontAtlas_IsBuilt(ImFontAtlas* self)
 {
     return self->IsBuilt();
 }
-CIMGUI_API void ImFontAtlas_SetTexID(ImFontAtlas* self,ImTextureID id)
+CIMGUI_API void ImFontAtlas_SetTexID(ImFontAtlas* self,int texture_index,ImTextureID id)
 {
-    return self->SetTexID(id);
+    return self->SetTexID(texture_index,id);
+}
+CIMGUI_API void ImFontAtlas_ClearTexID(ImFontAtlas* self,ImTextureID nullId)
+{
+    return self->ClearTexID(nullId);
 }
 CIMGUI_API const ImWchar* ImFontAtlas_GetGlyphRangesDefault(ImFontAtlas* self)
 {
@@ -2513,9 +2517,9 @@ CIMGUI_API void ImFontAtlas_CalcCustomRectUV(ImFontAtlas* self,const ImFontAtlas
 {
     return self->CalcCustomRectUV(rect,out_uv_min,out_uv_max);
 }
-CIMGUI_API bool ImFontAtlas_GetMouseCursorTexData(ImFontAtlas* self,ImGuiMouseCursor cursor,ImVec2* out_offset,ImVec2* out_size,ImVec2 out_uv_border[2],ImVec2 out_uv_fill[2])
+CIMGUI_API bool ImFontAtlas_GetMouseCursorTexData(ImFontAtlas* self,ImGuiMouseCursor cursor,ImVec2* out_offset,ImVec2* out_size,ImVec2 out_uv_border[2],ImVec2 out_uv_fill[2],int* texture_index)
 {
-    return self->GetMouseCursorTexData(cursor,out_offset,out_size,out_uv_border,out_uv_fill);
+    return self->GetMouseCursorTexData(cursor,out_offset,out_size,out_uv_border,out_uv_fill,texture_index);
 }
 CIMGUI_API ImFont* ImFont_ImFont(void)
 {
@@ -2532,6 +2536,10 @@ CIMGUI_API const ImFontGlyph* ImFont_FindGlyph(ImFont* self,ImWchar c)
 CIMGUI_API const ImFontGlyph* ImFont_FindGlyphNoFallback(ImFont* self,ImWchar c)
 {
     return self->FindGlyphNoFallback(c);
+}
+CIMGUI_API float ImFont_GetDistanceAdjustmentForPair(ImFont* self,ImWchar left_c,ImWchar right_c)
+{
+    return self->GetDistanceAdjustmentForPair(left_c,right_c);
 }
 CIMGUI_API float ImFont_GetCharAdvance(ImFont* self,ImWchar c)
 {
@@ -2573,9 +2581,9 @@ CIMGUI_API void ImFont_GrowIndex(ImFont* self,int new_size)
 {
     return self->GrowIndex(new_size);
 }
-CIMGUI_API void ImFont_AddGlyph(ImFont* self,const ImFontConfig* src_cfg,ImWchar c,float x0,float y0,float x1,float y1,float u0,float v0,float u1,float v1,float advance_x)
+CIMGUI_API void ImFont_AddGlyph(ImFont* self,const ImFontConfig* src_cfg,ImWchar c,int texture_index,float x0,float y0,float x1,float y1,float u0,float v0,float u1,float v1,float advance_x)
 {
-    return self->AddGlyph(src_cfg,c,x0,y0,x1,y1,u0,v0,u1,v1,advance_x);
+    return self->AddGlyph(src_cfg,c,texture_index,x0,y0,x1,y1,u0,v0,u1,v1,advance_x);
 }
 CIMGUI_API void ImFont_AddRemapChar(ImFont* self,ImWchar dst,ImWchar src,bool overwrite_dst)
 {
@@ -2588,6 +2596,14 @@ CIMGUI_API void ImFont_SetGlyphVisible(ImFont* self,ImWchar c,bool visible)
 CIMGUI_API bool ImFont_IsGlyphRangeUnused(ImFont* self,unsigned int c_begin,unsigned int c_last)
 {
     return self->IsGlyphRangeUnused(c_begin,c_last);
+}
+CIMGUI_API void ImFont_AddKerningPair(ImFont* self,ImWchar left_c,ImWchar right_c,float distance_adjustment)
+{
+    return self->AddKerningPair(left_c,right_c,distance_adjustment);
+}
+CIMGUI_API float ImFont_GetDistanceAdjustmentForPairFromHotData(ImFont* self,ImWchar left_c,const ImFontGlyphHotData* right_c_info)
+{
+    return self->GetDistanceAdjustmentForPairFromHotData(left_c,right_c_info);
 }
 CIMGUI_API ImGuiViewport* ImGuiViewport_ImGuiViewport(void)
 {
@@ -2641,7 +2657,7 @@ CIMGUI_API ImGuiID igImHashStr(const char* data,size_t data_size,ImU32 seed)
 {
     return ImHashStr(data,data_size,seed);
 }
-CIMGUI_API void igImQsort(void* base,size_t count,size_t size_of_element,int(*compare_func)(void const*,void const*))
+CIMGUI_API void igImQsort(void* base,size_t count,size_t size_of_element,int(__cdecl*compare_func)(void const*,void const*))
 {
     return ImQsort(base,count,size_of_element,compare_func);
 }
@@ -5099,25 +5115,25 @@ CIMGUI_API void igImFontAtlasBuildSetupFont(ImFontAtlas* atlas,ImFont* font,ImFo
 {
     return ImFontAtlasBuildSetupFont(atlas,font,font_config,ascent,descent);
 }
-CIMGUI_API void igImFontAtlasBuildPackCustomRects(ImFontAtlas* atlas,void* stbrp_context_opaque)
+CIMGUI_API void igImFontAtlasBuildPackCustomRects(ImFontAtlas* atlas,ImVector_stbtt_pack_context * pack_contexts)
 {
-    return ImFontAtlasBuildPackCustomRects(atlas,stbrp_context_opaque);
+    return ImFontAtlasBuildPackCustomRects(atlas,*pack_contexts);
 }
 CIMGUI_API void igImFontAtlasBuildFinish(ImFontAtlas* atlas)
 {
     return ImFontAtlasBuildFinish(atlas);
 }
-CIMGUI_API void igImFontAtlasBuildRender8bppRectFromString(ImFontAtlas* atlas,int x,int y,int w,int h,const char* in_str,char in_marker_char,unsigned char in_marker_pixel_value)
+CIMGUI_API void igImFontAtlasBuildRender8bppRectFromString(ImFontAtlas* atlas,int texture_index,int x,int y,int w,int h,const char* in_str,char in_marker_char,unsigned char in_marker_pixel_value)
 {
-    return ImFontAtlasBuildRender8bppRectFromString(atlas,x,y,w,h,in_str,in_marker_char,in_marker_pixel_value);
+    return ImFontAtlasBuildRender8bppRectFromString(atlas,texture_index,x,y,w,h,in_str,in_marker_char,in_marker_pixel_value);
 }
-CIMGUI_API void igImFontAtlasBuildRender32bppRectFromString(ImFontAtlas* atlas,int x,int y,int w,int h,const char* in_str,char in_marker_char,unsigned int in_marker_pixel_value)
+CIMGUI_API void igImFontAtlasBuildRender32bppRectFromString(ImFontAtlas* atlas,int texture_index,int x,int y,int w,int h,const char* in_str,char in_marker_char,unsigned int in_marker_pixel_value)
 {
-    return ImFontAtlasBuildRender32bppRectFromString(atlas,x,y,w,h,in_str,in_marker_char,in_marker_pixel_value);
+    return ImFontAtlasBuildRender32bppRectFromString(atlas,texture_index,x,y,w,h,in_str,in_marker_char,in_marker_pixel_value);
 }
-CIMGUI_API void igImFontAtlasBuildMultiplyCalcLookupTable(unsigned char out_table[256],float in_multiply_factor)
+CIMGUI_API void igImFontAtlasBuildMultiplyCalcLookupTable(unsigned char out_table[256],float in_multiply_factor,float gamma_factor)
 {
-    return ImFontAtlasBuildMultiplyCalcLookupTable(out_table,in_multiply_factor);
+    return ImFontAtlasBuildMultiplyCalcLookupTable(out_table,in_multiply_factor,gamma_factor);
 }
 CIMGUI_API void igImFontAtlasBuildMultiplyRectAlpha8(const unsigned char table[256],unsigned char* pixels,int x,int y,int w,int h,int stride)
 {
