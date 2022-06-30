@@ -873,9 +873,9 @@
         "value": "1 << 6"
       },
       {
-        "calc_value": 64,
+        "calc_value": 128,
         "name": "ImGuiConfigFlags_DockingEnable",
-        "value": "1 << 6"
+        "value": "1 << 7"
       },
       {
         "calc_value": 1024,

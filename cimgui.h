@@ -613,7 +613,7 @@ typedef enum {
     ImGuiConfigFlags_NoMouse = 1 << 4,
     ImGuiConfigFlags_NoMouseCursorChange = 1 << 5,
     ImGuiConfigFlags_NoKerning = 1 << 6,
-    ImGuiConfigFlags_DockingEnable = 1 << 6,
+    ImGuiConfigFlags_DockingEnable = 1 << 7,
     ImGuiConfigFlags_ViewportsEnable = 1 << 10,
     ImGuiConfigFlags_DpiEnableScaleViewports= 1 << 14,
     ImGuiConfigFlags_DpiEnableScaleFonts = 1 << 15,
