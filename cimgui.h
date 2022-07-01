@@ -690,7 +690,6 @@ typedef enum {
 }ImGuiCol_;
 typedef enum {
     ImGuiStyleVar_Alpha,
-    ImGuiStyleVar_DisabledAlpha,
     ImGuiStyleVar_WindowPadding,
     ImGuiStyleVar_WindowRounding,
     ImGuiStyleVar_WindowBorderSize,
@@ -714,6 +713,7 @@ typedef enum {
     ImGuiStyleVar_TabRounding,
     ImGuiStyleVar_ButtonTextAlign,
     ImGuiStyleVar_SelectableTextAlign,
+    ImGuiStyleVar_DisabledAlpha,
     ImGuiStyleVar_COUNT
 }ImGuiStyleVar_;
 typedef enum {

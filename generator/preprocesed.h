@@ -999,7 +999,6 @@ enum ImGuiCol_
 enum ImGuiStyleVar_
 {
     ImGuiStyleVar_Alpha,
-    ImGuiStyleVar_DisabledAlpha,
     ImGuiStyleVar_WindowPadding,
     ImGuiStyleVar_WindowRounding,
     ImGuiStyleVar_WindowBorderSize,
@@ -1023,6 +1022,7 @@ enum ImGuiStyleVar_
     ImGuiStyleVar_TabRounding,
     ImGuiStyleVar_ButtonTextAlign,
     ImGuiStyleVar_SelectableTextAlign,
+    ImGuiStyleVar_DisabledAlpha,
     ImGuiStyleVar_COUNT
 };
 enum ImGuiButtonFlags_
