@@ -1,4 +1,4 @@
 [submodule "imgui"]
 	path = imgui
-	url = https://github.com/ocornut/imgui.git
+	url = https://github.com/goatcorp/gc-imgui.git
 	branch = master
