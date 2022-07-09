@@ -675,28 +675,28 @@ enum ImGuiTableFlags_
 enum ImGuiTableColumnFlags_
 {
     ImGuiTableColumnFlags_None = 0,
-    ImGuiTableColumnFlags_Disabled = 1 << 0,
-    ImGuiTableColumnFlags_DefaultHide = 1 << 1,
-    ImGuiTableColumnFlags_DefaultSort = 1 << 2,
-    ImGuiTableColumnFlags_WidthStretch = 1 << 3,
-    ImGuiTableColumnFlags_WidthFixed = 1 << 4,
-    ImGuiTableColumnFlags_NoResize = 1 << 5,
-    ImGuiTableColumnFlags_NoReorder = 1 << 6,
-    ImGuiTableColumnFlags_NoHide = 1 << 7,
-    ImGuiTableColumnFlags_NoClip = 1 << 8,
-    ImGuiTableColumnFlags_NoSort = 1 << 9,
-    ImGuiTableColumnFlags_NoSortAscending = 1 << 10,
-    ImGuiTableColumnFlags_NoSortDescending = 1 << 11,
-    ImGuiTableColumnFlags_NoHeaderLabel = 1 << 12,
-    ImGuiTableColumnFlags_NoHeaderWidth = 1 << 13,
-    ImGuiTableColumnFlags_PreferSortAscending = 1 << 14,
-    ImGuiTableColumnFlags_PreferSortDescending = 1 << 15,
-    ImGuiTableColumnFlags_IndentEnable = 1 << 16,
-    ImGuiTableColumnFlags_IndentDisable = 1 << 17,
-    ImGuiTableColumnFlags_IsEnabled = 1 << 24,
-    ImGuiTableColumnFlags_IsVisible = 1 << 25,
-    ImGuiTableColumnFlags_IsSorted = 1 << 26,
-    ImGuiTableColumnFlags_IsHovered = 1 << 27,
+    ImGuiTableColumnFlags_DefaultHide = 1 << 0,
+    ImGuiTableColumnFlags_DefaultSort = 1 << 1,
+    ImGuiTableColumnFlags_WidthStretch = 1 << 2,
+    ImGuiTableColumnFlags_WidthFixed = 1 << 3,
+    ImGuiTableColumnFlags_NoResize = 1 << 4,
+    ImGuiTableColumnFlags_NoReorder = 1 << 5,
+    ImGuiTableColumnFlags_NoHide = 1 << 6,
+    ImGuiTableColumnFlags_NoClip = 1 << 7,
+    ImGuiTableColumnFlags_NoSort = 1 << 8,
+    ImGuiTableColumnFlags_NoSortAscending = 1 << 9,
+    ImGuiTableColumnFlags_NoSortDescending = 1 << 10,
+    ImGuiTableColumnFlags_NoHeaderWidth = 1 << 11,
+    ImGuiTableColumnFlags_PreferSortAscending = 1 << 12,
+    ImGuiTableColumnFlags_PreferSortDescending = 1 << 13,
+    ImGuiTableColumnFlags_IndentEnable = 1 << 14,
+    ImGuiTableColumnFlags_IndentDisable = 1 << 15,
+    ImGuiTableColumnFlags_IsEnabled = 1 << 20,
+    ImGuiTableColumnFlags_IsVisible = 1 << 21,
+    ImGuiTableColumnFlags_IsSorted = 1 << 22,
+    ImGuiTableColumnFlags_IsHovered = 1 << 23,
+    ImGuiTableColumnFlags_Disabled = 1 << 16,
+    ImGuiTableColumnFlags_NoHeaderLabel = 1 << 17,
     ImGuiTableColumnFlags_WidthMask_ = ImGuiTableColumnFlags_WidthStretch | ImGuiTableColumnFlags_WidthFixed,
     ImGuiTableColumnFlags_IndentMask_ = ImGuiTableColumnFlags_IndentEnable | ImGuiTableColumnFlags_IndentDisable,
     ImGuiTableColumnFlags_StatusMask_ = ImGuiTableColumnFlags_IsEnabled | ImGuiTableColumnFlags_IsVisible | ImGuiTableColumnFlags_IsSorted | ImGuiTableColumnFlags_IsHovered,
@@ -730,15 +730,15 @@ enum ImGuiHoveredFlags_
     ImGuiHoveredFlags_ChildWindows = 1 << 0,
     ImGuiHoveredFlags_RootWindow = 1 << 1,
     ImGuiHoveredFlags_AnyWindow = 1 << 2,
-    ImGuiHoveredFlags_NoPopupHierarchy = 1 << 3,
-    ImGuiHoveredFlags_DockHierarchy = 1 << 4,
-    ImGuiHoveredFlags_AllowWhenBlockedByPopup = 1 << 5,
-    ImGuiHoveredFlags_AllowWhenBlockedByActiveItem = 1 << 7,
-    ImGuiHoveredFlags_AllowWhenOverlapped = 1 << 8,
-    ImGuiHoveredFlags_AllowWhenDisabled = 1 << 9,
-    ImGuiHoveredFlags_NoNavOverride = 1 << 10,
+    ImGuiHoveredFlags_AllowWhenBlockedByPopup = 1 << 3,
+    ImGuiHoveredFlags_AllowWhenBlockedByActiveItem = 1 << 5,
+    ImGuiHoveredFlags_AllowWhenOverlapped = 1 << 6,
+    ImGuiHoveredFlags_AllowWhenDisabled = 1 << 7,
+    ImGuiHoveredFlags_NoNavOverride = 1 << 8,
     ImGuiHoveredFlags_RectOnly = ImGuiHoveredFlags_AllowWhenBlockedByPopup | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem | ImGuiHoveredFlags_AllowWhenOverlapped,
-    ImGuiHoveredFlags_RootAndChildWindows = ImGuiHoveredFlags_RootWindow | ImGuiHoveredFlags_ChildWindows
+    ImGuiHoveredFlags_RootAndChildWindows = ImGuiHoveredFlags_RootWindow | ImGuiHoveredFlags_ChildWindows,
+    ImGuiHoveredFlags_NoPopupHierarchy = 1 << 9,
+    ImGuiHoveredFlags_DockHierarchy = 1 << 10,
 };
 enum ImGuiDockNodeFlags_
 {
@@ -903,6 +903,7 @@ enum ImGuiNavInput_
     ImGuiNavInput_FocusNext,
     ImGuiNavInput_TweakSlow,
     ImGuiNavInput_TweakFast,
+    ImGuiNavInput_KeyMenu_,
     ImGuiNavInput_KeyLeft_,
     ImGuiNavInput_KeyRight_,
     ImGuiNavInput_KeyUp_,
@@ -918,8 +919,8 @@ enum ImGuiConfigFlags_
     ImGuiConfigFlags_NavNoCaptureKeyboard = 1 << 3,
     ImGuiConfigFlags_NoMouse = 1 << 4,
     ImGuiConfigFlags_NoMouseCursorChange = 1 << 5,
-    ImGuiConfigFlags_NoKerning = 1 << 6,
-    ImGuiConfigFlags_DockingEnable = 1 << 7,
+    ImGuiConfigFlags_NoKerning = 1 << 7,
+    ImGuiConfigFlags_DockingEnable = 1 << 6,
     ImGuiConfigFlags_ViewportsEnable = 1 << 10,
     ImGuiConfigFlags_DpiEnableScaleViewports= 1 << 14,
     ImGuiConfigFlags_DpiEnableScaleFonts = 1 << 15,
@@ -1060,6 +1061,7 @@ enum ImGuiColorEditFlags_
     ImGuiColorEditFlags_PickerHueWheel = 1 << 26,
     ImGuiColorEditFlags_InputRGB = 1 << 27,
     ImGuiColorEditFlags_InputHSV = 1 << 28,
+    ImGuiColorEditFlags__OptionsDefault = ImGuiColorEditFlags_Uint8 | ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_InputRGB | ImGuiColorEditFlags_PickerHueBar,
     ImGuiColorEditFlags_DefaultOptions_ = ImGuiColorEditFlags_Uint8 | ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_InputRGB | ImGuiColorEditFlags_PickerHueBar,
     ImGuiColorEditFlags_DisplayMask_ = ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_DisplayHSV | ImGuiColorEditFlags_DisplayHex,
     ImGuiColorEditFlags_DataTypeMask_ = ImGuiColorEditFlags_Uint8 | ImGuiColorEditFlags_Float,
@@ -1129,36 +1131,36 @@ struct ImVector
     inline int size_in_bytes() const { return Size * (int)sizeof(T); }
     inline int max_size() const { return 0x7FFFFFFF / (int)sizeof(T); }
     inline int capacity() const { return Capacity; }
-    inline T& operator[](int i) { (void)( (!!(i >= 0 && i < Size)) || (_wassert(L"i >= 0 && i < Size", L"./../imgui/imgui.h", (unsigned)(1874)), 0) ); return Data[i]; }
-    inline const T& operator[](int i) const { (void)( (!!(i >= 0 && i < Size)) || (_wassert(L"i >= 0 && i < Size", L"./../imgui/imgui.h", (unsigned)(1875)), 0) ); return Data[i]; }
+    inline T& operator[](int i) { (void)( (!!(i >= 0 && i < Size)) || (_wassert(L"i >= 0 && i < Size", L"./../imgui/imgui.h", (unsigned)(1880)), 0) ); return Data[i]; }
+    inline const T& operator[](int i) const { (void)( (!!(i >= 0 && i < Size)) || (_wassert(L"i >= 0 && i < Size", L"./../imgui/imgui.h", (unsigned)(1881)), 0) ); return Data[i]; }
     inline T* begin() { return Data; }
     inline const T* begin() const { return Data; }
     inline T* end() { return Data + Size; }
     inline const T* end() const { return Data + Size; }
-    inline T& front() { (void)( (!!(Size > 0)) || (_wassert(L"Size > 0", L"./../imgui/imgui.h", (unsigned)(1881)), 0) ); return Data[0]; }
-    inline const T& front() const { (void)( (!!(Size > 0)) || (_wassert(L"Size > 0", L"./../imgui/imgui.h", (unsigned)(1882)), 0) ); return Data[0]; }
-    inline T& back() { (void)( (!!(Size > 0)) || (_wassert(L"Size > 0", L"./../imgui/imgui.h", (unsigned)(1883)), 0) ); return Data[Size - 1]; }
-    inline const T& back() const { (void)( (!!(Size > 0)) || (_wassert(L"Size > 0", L"./../imgui/imgui.h", (unsigned)(1884)), 0) ); return Data[Size - 1]; }
+    inline T& front() { (void)( (!!(Size > 0)) || (_wassert(L"Size > 0", L"./../imgui/imgui.h", (unsigned)(1887)), 0) ); return Data[0]; }
+    inline const T& front() const { (void)( (!!(Size > 0)) || (_wassert(L"Size > 0", L"./../imgui/imgui.h", (unsigned)(1888)), 0) ); return Data[0]; }
+    inline T& back() { (void)( (!!(Size > 0)) || (_wassert(L"Size > 0", L"./../imgui/imgui.h", (unsigned)(1889)), 0) ); return Data[Size - 1]; }
+    inline const T& back() const { (void)( (!!(Size > 0)) || (_wassert(L"Size > 0", L"./../imgui/imgui.h", (unsigned)(1890)), 0) ); return Data[Size - 1]; }
     inline void swap(ImVector<T>& rhs) { int rhs_size = rhs.Size; rhs.Size = Size; Size = rhs_size; int rhs_cap = rhs.Capacity; rhs.Capacity = Capacity; Capacity = rhs_cap; T* rhs_data = rhs.Data; rhs.Data = Data; Data = rhs_data; }
     inline int _grow_capacity(int sz) const { int new_capacity = Capacity ? (Capacity + Capacity / 2) : 8; return new_capacity > sz ? new_capacity : sz; }
     inline void resize(int new_size) { if (new_size > Capacity) reserve(_grow_capacity(new_size)); Size = new_size; }
     inline void resize(int new_size, const T& v) { if (new_size > Capacity) reserve(_grow_capacity(new_size)); if (new_size > Size) for (int n = Size; n < new_size; n++) memcpy(&Data[n], &v, sizeof(v)); Size = new_size; }
-    inline void shrink(int new_size) { (void)( (!!(new_size <= Size)) || (_wassert(L"new_size <= Size", L"./../imgui/imgui.h", (unsigned)(1890)), 0) ); Size = new_size; }
+    inline void shrink(int new_size) { (void)( (!!(new_size <= Size)) || (_wassert(L"new_size <= Size", L"./../imgui/imgui.h", (unsigned)(1896)), 0) ); Size = new_size; }
     inline void reserve(int new_capacity) { if (new_capacity <= Capacity) return; T* new_data = (T*)ImGui::MemAlloc((size_t)new_capacity * sizeof(T)); if (Data) { memcpy(new_data, Data, (size_t)Size * sizeof(T)); ImGui::MemFree(Data); } Data = new_data; Capacity = new_capacity; }
     inline void reserve_discard(int new_capacity) { if (new_capacity <= Capacity) return; if (Data) ImGui::MemFree(Data); Data = (T*)ImGui::MemAlloc((size_t)new_capacity * sizeof(T)); Capacity = new_capacity; }
     inline void push_back(const T& v) { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }
-    inline void pop_back() { (void)( (!!(Size > 0)) || (_wassert(L"Size > 0", L"./../imgui/imgui.h", (unsigned)(1896)), 0) ); Size--; }
+    inline void pop_back() { (void)( (!!(Size > 0)) || (_wassert(L"Size > 0", L"./../imgui/imgui.h", (unsigned)(1902)), 0) ); Size--; }
     inline void push_front(const T& v) { if (Size == 0) push_back(v); else insert(Data, v); }
-    inline T* erase(const T* it) { (void)( (!!(it >= Data && it < Data + Size)) || (_wassert(L"it >= Data && it < Data + Size", L"./../imgui/imgui.h", (unsigned)(1898)), 0) ); const ptrdiff_t off = it - Data; memmove(Data + off, Data + off + 1, ((size_t)Size - (size_t)off - 1) * sizeof(T)); Size--; return Data + off; }
-    inline T* erase(const T* it, const T* it_last){ (void)( (!!(it >= Data && it < Data + Size && it_last >= it && it_last <= Data + Size)) || (_wassert(L"it >= Data && it < Data + Size && it_last >= it && it_last <= Data + Size", L"./../imgui/imgui.h", (unsigned)(1899)), 0) ); const ptrdiff_t count = it_last - it; const ptrdiff_t off = it - Data; memmove(Data + off, Data + off + count, ((size_t)Size - (size_t)off - (size_t)count) * sizeof(T)); Size -= (int)count; return Data + off; }
-    inline T* erase_unsorted(const T* it) { (void)( (!!(it >= Data && it < Data + Size)) || (_wassert(L"it >= Data && it < Data + Size", L"./../imgui/imgui.h", (unsigned)(1900)), 0) ); const ptrdiff_t off = it - Data; if (it < Data + Size - 1) memcpy(Data + off, Data + Size - 1, sizeof(T)); Size--; return Data + off; }
-    inline T* insert(const T* it, const T& v) { (void)( (!!(it >= Data && it <= Data + Size)) || (_wassert(L"it >= Data && it <= Data + Size", L"./../imgui/imgui.h", (unsigned)(1901)), 0) ); const ptrdiff_t off = it - Data; if (Size == Capacity) reserve(_grow_capacity(Size + 1)); if (off < (int)Size) memmove(Data + off + 1, Data + off, ((size_t)Size - (size_t)off) * sizeof(T)); memcpy(&Data[off], &v, sizeof(v)); Size++; return Data + off; }
+    inline T* erase(const T* it) { (void)( (!!(it >= Data && it < Data + Size)) || (_wassert(L"it >= Data && it < Data + Size", L"./../imgui/imgui.h", (unsigned)(1904)), 0) ); const ptrdiff_t off = it - Data; memmove(Data + off, Data + off + 1, ((size_t)Size - (size_t)off - 1) * sizeof(T)); Size--; return Data + off; }
+    inline T* erase(const T* it, const T* it_last){ (void)( (!!(it >= Data && it < Data + Size && it_last >= it && it_last <= Data + Size)) || (_wassert(L"it >= Data && it < Data + Size && it_last >= it && it_last <= Data + Size", L"./../imgui/imgui.h", (unsigned)(1905)), 0) ); const ptrdiff_t count = it_last - it; const ptrdiff_t off = it - Data; memmove(Data + off, Data + off + count, ((size_t)Size - (size_t)off - (size_t)count) * sizeof(T)); Size -= (int)count; return Data + off; }
+    inline T* erase_unsorted(const T* it) { (void)( (!!(it >= Data && it < Data + Size)) || (_wassert(L"it >= Data && it < Data + Size", L"./../imgui/imgui.h", (unsigned)(1906)), 0) ); const ptrdiff_t off = it - Data; if (it < Data + Size - 1) memcpy(Data + off, Data + Size - 1, sizeof(T)); Size--; return Data + off; }
+    inline T* insert(const T* it, const T& v) { (void)( (!!(it >= Data && it <= Data + Size)) || (_wassert(L"it >= Data && it <= Data + Size", L"./../imgui/imgui.h", (unsigned)(1907)), 0) ); const ptrdiff_t off = it - Data; if (Size == Capacity) reserve(_grow_capacity(Size + 1)); if (off < (int)Size) memmove(Data + off + 1, Data + off, ((size_t)Size - (size_t)off) * sizeof(T)); memcpy(&Data[off], &v, sizeof(v)); Size++; return Data + off; }
     inline bool contains(const T& v) const { const T* data = Data; const T* data_end = Data + Size; while (data < data_end) if (*data++ == v) return true; return false; }
     inline T* find(const T& v) { T* data = Data; const T* data_end = Data + Size; while (data < data_end) if (*data == v) break; else ++data; return data; }
     inline const T* find(const T& v) const { const T* data = Data; const T* data_end = Data + Size; while (data < data_end) if (*data == v) break; else ++data; return data; }
     inline bool find_erase(const T& v) { const T* it = find(v); if (it < Data + Size) { erase(it); return true; } return false; }
     inline bool find_erase_unsorted(const T& v) { const T* it = find(v); if (it < Data + Size) { erase_unsorted(it); return true; } return false; }
-    inline int index_from_ptr(const T* it) const { (void)( (!!(it >= Data && it < Data + Size)) || (_wassert(L"it >= Data && it < Data + Size", L"./../imgui/imgui.h", (unsigned)(1907)), 0) ); const ptrdiff_t off = it - Data; return (int)off; }
+    inline int index_from_ptr(const T* it) const { (void)( (!!(it >= Data && it < Data + Size)) || (_wassert(L"it >= Data && it < Data + Size", L"./../imgui/imgui.h", (unsigned)(1913)), 0) ); const ptrdiff_t off = it - Data; return (int)off; }
 };
 struct ImGuiStyle
 {
@@ -1430,7 +1432,7 @@ struct ImGuiTextBuffer
     ImVector<char> Buf;
               static char EmptyString[1];
     ImGuiTextBuffer() { }
-    inline char operator[](int i) const { (void)( (!!(Buf.Data != ((void*)0))) || (_wassert(L"Buf.Data != ((void*)0)", L"./../imgui/imgui.h", (unsigned)(2331)), 0) ); return Buf.Data[i]; }
+    inline char operator[](int i) const { (void)( (!!(Buf.Data != ((void*)0))) || (_wassert(L"Buf.Data != ((void*)0)", L"./../imgui/imgui.h", (unsigned)(2337)), 0) ); return Buf.Data[i]; }
     const char* begin() const { return Buf.Data ? &Buf.front() : EmptyString; }
     const char* end() const { return Buf.Data ? &Buf.back() : EmptyString; }
     int size() const { return Buf.Size ? Buf.Size - 1 : 0; }
@@ -1765,7 +1767,7 @@ struct ImFontAtlas
               const ImWchar* GetGlyphRangesVietnamese();
               int AddCustomRectRegular(int width, int height);
               int AddCustomRectFontGlyph(ImFont* font, ImWchar id, int width, int height, float advance_x, const ImVec2& offset = ImVec2(0, 0));
-    ImFontAtlasCustomRect* GetCustomRectByIndex(int index) { (void)( (!!(index >= 0)) || (_wassert(L"index >= 0", L"./../imgui/imgui.h", (unsigned)(2932)), 0) ); return &CustomRects[index]; }
+    ImFontAtlasCustomRect* GetCustomRectByIndex(int index) { (void)( (!!(index >= 0)) || (_wassert(L"index >= 0", L"./../imgui/imgui.h", (unsigned)(2938)), 0) ); return &CustomRects[index]; }
               void CalcCustomRectUV(const ImFontAtlasCustomRect* rect, ImVec2* out_uv_min, ImVec2* out_uv_max) const;
               bool GetMouseCursorTexData(ImGuiMouseCursor cursor, ImVec2* out_offset, ImVec2* out_size, ImVec2 out_uv_border[2], ImVec2 out_uv_fill[2], int* texture_index);
     ImFontAtlasFlags Flags;
@@ -1883,7 +1885,7 @@ struct ImGuiViewport
     bool PlatformRequestResize;
     bool PlatformRequestClose;
     ImGuiViewport() { memset(this, 0, sizeof(*this)); }
-    ~ImGuiViewport() { (void)( (!!(PlatformUserData == ((void*)0) && RendererUserData == ((void*)0))) || (_wassert(L"PlatformUserData == ((void*)0) && RendererUserData == ((void*)0)", L"./../imgui/imgui.h", (unsigned)(3114)), 0) ); }
+    ~ImGuiViewport() { (void)( (!!(PlatformUserData == ((void*)0) && RendererUserData == ((void*)0))) || (_wassert(L"PlatformUserData == ((void*)0) && RendererUserData == ((void*)0)", L"./../imgui/imgui.h", (unsigned)(3120)), 0) ); }
     ImVec2 GetCenter() const { return ImVec2(Pos.x + Size.x * 0.5f, Pos.y + Size.y * 0.5f); }
     ImVec2 GetWorkCenter() const { return ImVec2(WorkPos.x + WorkSize.x * 0.5f, WorkPos.y + WorkSize.y * 0.5f); }
 };
