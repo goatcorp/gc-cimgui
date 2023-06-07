@@ -5,6 +5,14 @@
 
 #include "cimgui.h"
 
+CIMGUI_API void igCustom_ClearStacks()
+{
+	ImGuiContext& g = *GImGui;
+	g.ColorStack.clear();
+    g.StyleVarStack.clear();
+    g.FontStack.clear();
+}
+
 // These are done manually, zzz
 #ifdef CIMGUI_USE_WIN32
 #include <windows.h>
