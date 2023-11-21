@@ -2,6 +2,7 @@
 #include "./imgui/imgui_internal.h"
 #include "./imgui/backends/imgui_impl_win32.h"
 #include "./imgui/backends/imgui_impl_dx11.h"
+#include "./imgui/backends/imgui_impl_dx12.h"
 
 #include "cimgui.h"
 
@@ -91,6 +92,41 @@ CIMGUI_API void igImpls_ImplDX11_InvalidateDeviceObjects()
 CIMGUI_API bool igImpls_ImplDX11_CreateDeviceObjects()
 {
 	return ImGui_ImplDX11_CreateDeviceObjects();
+}
+
+#endif
+
+#ifdef CIMGUI_USE_DX12
+
+CIMGUI_API bool igImpls_ImplDX12_Init(ID3D12Device* device, int num_frames_in_flight, DXGI_FORMAT rtv_format, ID3D12DescriptorHeap* cbv_srv_heap,
+                                            D3D12_CPU_DESCRIPTOR_HANDLE font_srv_cpu_desc_handle, D3D12_GPU_DESCRIPTOR_HANDLE font_srv_gpu_desc_handle)
+{
+	return ImGui_ImplDX12_Init(device, num_frames_in_flight, rtv_format, cbv_srv_heap, font_srv_cpu_desc_handle, font_srv_gpu_desc_handle);
+}
+
+CIMGUI_API void igImpls_ImplDX12_Shutdown()
+{
+	ImGui_ImplDX12_Shutdown();
+}
+
+CIMGUI_API void igImpls_ImplDX12_NewFrame()
+{
+	ImGui_ImplDX12_NewFrame();
+}
+
+CIMGUI_API void igImpls_ImplDX12_RenderDrawData(ImDrawData* draw_data, ID3D12GraphicsCommandList* graphics_command_list)
+{
+	ImGui_ImplDX12_RenderDrawData(draw_data, graphics_command_list);
+}
+
+CIMGUI_API void igImpls_ImplDX12_InvalidateDeviceObjects()
+{
+	ImGui_ImplDX12_InvalidateDeviceObjects();
+}
+
+CIMGUI_API bool igImpls_ImplDX12_CreateDeviceObjects()
+{
+	return ImGui_ImplDX12_CreateDeviceObjects();
 }
 
 #endif
