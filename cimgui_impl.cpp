@@ -101,6 +101,8 @@ CIMGUI_API bool igImpls_ImplDX11_CreateDeviceObjects()
 
 #ifdef CIMGUI_USE_DX12
 
+#pragma comment(lib, "dxgi.lib")
+
 #include <d3d12.h>
 #include "./imgui/backends/imgui_impl_dx12.h"
 
