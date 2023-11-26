@@ -1,24 +1,25 @@
 #include "./imgui/imgui.h"
 #include "./imgui/imgui_internal.h"
-#include "./imgui/backends/imgui_impl_win32.h"
-#include "./imgui/backends/imgui_impl_dx11.h"
-#include "./imgui/backends/imgui_impl_dx12.h"
 
 #include "cimgui.h"
 
 CIMGUI_API void igCustom_ClearStacks()
 {
-	ImGuiContext& g = *GImGui;
-	g.ColorStack.clear();
+    ImGuiContext& g = *GImGui;
+    g.ColorStack.clear();
     g.StyleVarStack.clear();
     g.FontStack.clear();
 }
 
 // These are done manually, zzz
 #ifdef CIMGUI_USE_WIN32
+
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+#include "./imgui/backends/imgui_impl_win32.h"
+
+IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 CIMGUI_API bool igImpls_ImplWin32_Init(void* hwnd)
 {
@@ -64,6 +65,8 @@ CIMGUI_API void igImpls_ImplWin32_EnableAlphaCompositing(void* hwnd)
 
 #ifdef CIMGUI_USE_DX11
 
+#include "./imgui/backends/imgui_impl_dx11.h"
+
 CIMGUI_API bool igImpls_ImplDX11_Init(ID3D11Device* device, ID3D11DeviceContext* device_context)
 {
 	return ImGui_ImplDX11_Init(device, device_context);
@@ -97,6 +100,9 @@ CIMGUI_API bool igImpls_ImplDX11_CreateDeviceObjects()
 #endif
 
 #ifdef CIMGUI_USE_DX12
+
+#include <d3d12.h>
+#include "./imgui/backends/imgui_impl_dx12.h"
 
 CIMGUI_API bool igImpls_ImplDX12_Init(ID3D12Device* device, int num_frames_in_flight, DXGI_FORMAT rtv_format, ID3D12DescriptorHeap* cbv_srv_heap,
                                             D3D12_CPU_DESCRIPTOR_HANDLE font_srv_cpu_desc_handle, D3D12_GPU_DESCRIPTOR_HANDLE font_srv_gpu_desc_handle)
