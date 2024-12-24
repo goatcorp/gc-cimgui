@@ -5,12 +5,11 @@
 
 #include "cimgui.h"
 
-CIMGUI_API void igCustom_ClearStacks()
-{
-	ImGuiContext& g = *GImGui;
-	g.ColorStack.clear();
-    g.StyleVarStack.clear();
-    g.FontStack.clear();
+ImGuiAssertCallback g_AssertCallback = nullptr;
+
+// Function to set the callback
+CIMGUI_API void igCustom_SetAssertCallback(ImGuiAssertCallback callback) {
+    g_AssertCallback = callback;
 }
 
 // These are done manually, zzz
