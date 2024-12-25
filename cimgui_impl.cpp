@@ -8,8 +8,14 @@
 ImGuiAssertCallback g_AssertCallback = nullptr;
 
 // Function to set the callback
-CIMGUI_API void igCustom_SetAssertCallback(ImGuiAssertCallback callback) {
+CIMGUI_API void igCustom_SetAssertCallback(ImGuiAssertCallback callback)
+{
     g_AssertCallback = callback;
+}
+
+CIMGUI_API void* igCustom_GetInputTextState()
+{
+    return &GImGui->InputTextState;
 }
 
 // These are done manually, zzz
