@@ -18,6 +18,17 @@ CIMGUI_API void* igCustom_GetInputTextState()
     return &GImGui->InputTextState;
 }
 
+// These are used in DalamudIme to interact with text boxes
+CIMGUI_API void igCustom_StbTextMakeUndoReplace(ImGuiInputTextState* str, int where, int old_length, int new_length)
+{
+    ImGui::Custom_StbTextMakeUndoReplace(str, where, old_length, new_length);
+}
+
+CIMGUI_API void igCustom_StbTextUndo(ImGuiInputTextState* str)
+{
+    ImGui::Custom_StbTextUndo(str);
+}
+
 // These are done manually, zzz
 #ifdef CIMGUI_USE_WIN32
 #include <windows.h>
