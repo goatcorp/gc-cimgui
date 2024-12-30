@@ -18,6 +18,15 @@ CIMGUI_API void* igCustom_GetInputTextState()
     return &GImGui->InputTextState;
 }
 
+CIMGUI_API void igCustom_WindowSetInheritNoInputs(bool inherit)
+{
+    ImGuiWindow* wnd = ImGui::GetCurrentWindow();
+    if (!wnd)
+        return;
+
+    wnd->InheritNoInputs = inherit;
+}
+
 // These are used in DalamudIme to interact with text boxes
 CIMGUI_API void igCustom_StbTextMakeUndoReplace(ImGuiInputTextState* str, int where, int old_length, int new_length)
 {
