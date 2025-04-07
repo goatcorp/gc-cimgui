@@ -404,6 +404,10 @@ CIMGUI_API float igGetFontSize()
 {
     return ImGui::GetFontSize();
 }
+CIMGUI_API ImTextureID igGetFontTexIdWhitePixel()
+{
+    return ImGui::GetFontTexIdWhitePixel();
+}
 CIMGUI_API void igGetFontTexUvWhitePixel(ImVec2 *pOut)
 {
     *pOut = ImGui::GetFontTexUvWhitePixel();
@@ -4963,6 +4967,14 @@ CIMGUI_API bool igTempInputIsActive(ImGuiID id)
 CIMGUI_API ImGuiInputTextState* igGetInputTextState(ImGuiID id)
 {
     return ImGui::GetInputTextState(id);
+}
+CIMGUI_API void igCustom_StbTextMakeUndoReplace(ImGuiInputTextState* str,int where,int old_length,int new_length)
+{
+    return ImGui::Custom_StbTextMakeUndoReplace(str,where,old_length,new_length);
+}
+CIMGUI_API void igCustom_StbTextUndo(ImGuiInputTextState* str)
+{
+    return ImGui::Custom_StbTextUndo(str);
 }
 CIMGUI_API void igColorTooltip(const char* text,const float* col,ImGuiColorEditFlags flags)
 {
