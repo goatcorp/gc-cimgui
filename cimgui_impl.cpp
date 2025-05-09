@@ -27,6 +27,11 @@ CIMGUI_API void igCustom_WindowSetInheritNoInputs(bool inherit)
     wnd->InheritNoInputs = inherit;
 }
 
+CIMGUI_API ImGuiWindow* igCustom_FindWindowByName(const char* name)
+{
+    return ImGui::FindWindowByName(name);
+}
+
 // These are done manually, zzz
 #ifdef CIMGUI_USE_WIN32
 #include <windows.h>
