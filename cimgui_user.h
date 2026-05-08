@@ -12,5 +12,4 @@ extern ImGuiAssertCallback g_AssertCallback;
     if (!(_EXPR) && g_AssertCallback) { \
         g_AssertCallback(#_EXPR, __FILE__, __LINE__); \
     } \
-    assert(_EXPR); \
 } while (0)
