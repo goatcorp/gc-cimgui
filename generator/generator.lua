@@ -319,7 +319,7 @@ local function cimgui_generation(parser)
 	hstrfile, num = hstrfile:gsub("typedef ImWchar16 ImWchar;", wchardefine)
 	assert(num == 1)
 	hstrfile, num = hstrfile:gsub("kPagesMap%[%(0xFFFF", "kPagesMap[(IM_UNICODE_CODEPOINT_MAX")
-	assert(num == 1, "kPagesMap[(IM_UNICODE_CODEPOINT_MAX not found or found more than once")
+	assert(num <= 1, "kPagesMap[(IM_UNICODE_CODEPOINT_MAX found more than once") -- none without the font engine
     save_data("./output/cimgui.h",cimgui_header,hstrfile)
     
     --merge it in cimgui_template.cpp to cimgui.cpp
@@ -409,13 +409,14 @@ print("------------------generation with "..COMPILER.."------------------------"
 local parser1
 local headers = [[#include "]]..IMGUI_PATH..[[/imgui.h"
 ]]
-local headersT = {[[imgui]]}
+local headersT = {[[imgui]], [[imgui_dalamud_text]]} -- DALAMUD CUSTOM [FONT]: imgui_dalamud_text.h is part of imgui.h
 if INTERNAL_GENERATION then
 	headers = headers .. [[#include "]]..IMGUI_PATH..[[/imgui_internal.h"
 ]]
 	headers = headers .. [[#include "]]..IMGUI_PATH..[[/imstb_textedit.h"
 ]]
 	headersT[#headersT + 1] = [[imgui_internal]]
+	headersT[#headersT + 1] = [[imgui_dalamud_text_internal]] -- DALAMUD CUSTOM [FONT]: part of imgui_internal.h
 	headersT[#headersT + 1] = [[imstb_textedit]]
 end
 if FREETYPE_GENERATION then

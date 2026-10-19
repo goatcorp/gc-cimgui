@@ -3526,7 +3526,7 @@ end
 
 --iterates lines from a gcc/clang -E in a specific location
 local function location(file,locpathT,defines,COMPILER,keepemptylines)
-	local define_re = "^#define%s+([^%s]+)%s+(.+)$"
+	local define_re = "^%s*#define%s+([^%s]+)%s+(.+)$"
 	local number_re = "^-?[0-9]+u*$"
 	local hex_re = "0x[0-9a-fA-F]+u*$"
     local location_re 
@@ -3559,8 +3559,8 @@ local function location(file,locpathT,defines,COMPILER,keepemptylines)
                 end
             end
 
-            if line:sub(1,1) == "#" then
-			--elseif line:match"^%s*#" then
+            -- cl /d1PP keeps the indentation of preserved directives
+            if line:match"^%s*#" then
                 -- Is this a location pragma?
                 local loc_num_t,location_match = line:match(location_re)
                 if location_match then
@@ -3589,6 +3589,11 @@ local function location(file,locpathT,defines,COMPILER,keepemptylines)
 					end
                 end
 				
+				-- cl /d1PP keeps multi-line #define bodies; skip their continuation lines
+				while line and line:match("\\%s*$") do
+					line = file:read"*l"
+					if in_location then loc_num_incr = loc_num_incr + 1 end
+				end
             elseif in_location then
                 local loc_num_real = loc_num + loc_num_incr
                 loc_num_incr = loc_num_incr + 1

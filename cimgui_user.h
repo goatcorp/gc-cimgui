@@ -1,6 +1,9 @@
 #include <assert.h>
 #include <cstdio>
 
+// Codepoints past U+FFFF, such as emoji, in text input and pasting.
+#define IMGUI_USE_WCHAR32
+
 // Callback type definition
 typedef void (*ImGuiAssertCallback)(const char* expr, const char* file, int line);
 
