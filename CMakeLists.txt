@@ -15,6 +15,8 @@ endif()
 file(GLOB IMGUI_SOURCES
     cimgui.cpp
     imgui/imgui.cpp
+    imgui/imgui_dalamud_text.cpp
+    imgui/imgui_dalamud_text_widget.cpp
     imgui/imgui_draw.cpp
     imgui/imgui_demo.cpp
     imgui/imgui_widgets.cpp

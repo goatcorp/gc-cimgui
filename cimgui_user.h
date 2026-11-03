@@ -1,0 +1,18 @@
+#include <assert.h>
+#include <cstdio>
+
+// Codepoints past U+FFFF, such as emoji, in text input and pasting.
+#define IMGUI_USE_WCHAR32
+
+// Callback type definition
+typedef void (*ImGuiAssertCallback)(const char* expr, const char* file, int line);
+
+// Global callback pointer
+extern ImGuiAssertCallback g_AssertCallback;
+
+// Assert macro
+#define IM_ASSERT(_EXPR) do { \
+    if (!(_EXPR) && g_AssertCallback) { \
+        g_AssertCallback(#_EXPR, __FILE__, __LINE__); \
+    } \
+} while (0)
